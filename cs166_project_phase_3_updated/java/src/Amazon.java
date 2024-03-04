@@ -32,6 +32,8 @@ import java.lang.Math;
  */
 public class Amazon {
 
+   // stores user id for user that is currently logged in
+   public static int current_user_id ;
    // reference to physical database connection.
    private Connection _connection = null;
 
@@ -387,8 +389,11 @@ public class Amazon {
 
          String query = String.format("SELECT * FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
          int userNum = esql.executeQuery(query);
-	 if (userNum > 0)
-		return name;
+	 if (userNum > 0){
+      return name;
+      query = String.format("SELECT UserID FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
+      current_user_id = esql.executeQuery(query);
+    }
          return null;
       }catch(Exception e){
          System.err.println (e.getMessage ());
@@ -398,7 +403,17 @@ public class Amazon {
 
 // Rest of the functions definition go in here
 
-   public static void viewStores(Amazon esql) {}
+   public static void viewStores(Amazon esql) {
+      try{
+         String query = String.format("SELECT latitude FROM USERS WHERE userID = '%s'", current_user_id);
+         int user_lat = esql.executeQuery(query);
+         query = String.format("SELECT longitude FROM USERS WHERE userID = '%s'", current_user_id);
+         int user_lon = esql.executeQuery(query);
+      }
+      catch(Exception e){
+
+      }  
+   }
    public static void viewProducts(Amazon esql) {}
    public static void placeOrder(Amazon esql) {}
    public static void viewRecentOrders(Amazon esql) {}
