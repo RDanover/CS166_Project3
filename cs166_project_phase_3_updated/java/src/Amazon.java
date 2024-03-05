@@ -389,11 +389,14 @@ public class Amazon {
 
          String query = String.format("SELECT * FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
          int userNum = esql.executeQuery(query);
-	 if (userNum > 0){
-      return name;
-      query = String.format("SELECT UserID FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
-      current_user_id = esql.executeQuery(query);
-    }
+         if (userNum > 0){
+            System.out.printf("Welcome %s \n", name)
+            query = String.format("SELECT UserID FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
+            List<List<String>> user_id_result = esql.executeQueryAndReturnResult(query);
+            current_user_id = Integer.parseInt(user_id_result.get(0).get(0));
+            System.out.printf("Current User ID is: %d \n",current_user_id);
+            return name;
+         }
          return null;
       }catch(Exception e){
          System.err.println (e.getMessage ());
@@ -424,7 +427,7 @@ public class Amazon {
             List<List<String>> store_lon_result = esql.executeQueryAndReturnResult(query);
             double store_lon = Double.parseDouble(store_lon_result.get(0).get(0));
 
-            if(calculateDistance (user_lat, user_lat, store_lat, store_long)<= 30){
+            if(calculateDistance (user_lat, user_lon, store_lat, store_lon)<= 30){
                valid_store_ids.add(i);
             }
          }
