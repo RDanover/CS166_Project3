@@ -406,12 +406,41 @@ public class Amazon {
    public static void viewStores(Amazon esql) {
       try{
          String query = String.format("SELECT latitude FROM USERS WHERE userID = '%s'", current_user_id);
-         int user_lat = esql.executeQuery(query);
+         List<List<String>> user_lat_result = esql.executeQueryAndReturnResult(query);
+         double user_lat = Double.parseDouble(user_lat_result.get(0).get(0));
+
+
          query = String.format("SELECT longitude FROM USERS WHERE userID = '%s'", current_user_id);
-         int user_lon = esql.executeQuery(query);
+         List<List<String>> user_lon_result = esql.executeQueryAndReturnResult(query);
+         double user_lon = Double.parseDouble(user_lon_result.get(0).get(0));
+
+         List<int> valid_store_ids = new ArrayList<>();
+         for(int i=0;i<20;i++){
+            query = String.format("SELECT latitude FROM STORES WHERE storeID = '%s'", i);
+            List<List<String>> store_lat_result = esql.executeQueryAndReturnResult(query);
+            double store_lat = Double.parseDouble(store_lat_result.get(0).get(0));
+
+            query = String.format("SELECT longitude FROM STORES WHERE storeID = '%s'", i);
+            List<List<String>> store_lon_result = esql.executeQueryAndReturnResult(query);
+            double store_lon = Double.parseDouble(store_lon_result.get(0).get(0));
+
+            if(calculateDistance (user_lat, user_lat, store_lat, store_long)<= 30){
+               valid_store_ids.add(i);
+            }
+         }
+         query = String.format("SELECT * FROM STORES WHERE storeID = ");
+         for(int id = valid_store_ids.size()-1;id>=0;id--){
+            if(id==0)
+               query += String.format("%s",id);
+            else
+               query += String.format("%s OR storeID = ",id);
+         }
+         int rowCount = esql.executeQuery(query);
+         System.out.println ("total row(s): " + rowCount);
       }
       catch(Exception e){
-
+         System.err.println (e.getMessage ());
+         return null;
       }  
    }
    public static void viewProducts(Amazon esql) {}
