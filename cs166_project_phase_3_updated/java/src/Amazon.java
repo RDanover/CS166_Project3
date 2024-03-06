@@ -70,7 +70,7 @@ public class Amazon {
    }//end Amazon
 
    // Method to calculate euclidean distance between two latitude, longitude pairs. 
-   public double calculateDistance (double lat1, double long1, double lat2, double long2){
+   public static double calculateDistance (double lat1, double long1, double lat2, double long2){
       double t1 = (lat1 - lat2) * (lat1 - lat2);
       double t2 = (long1 - long2) * (long1 - long2);
       return Math.sqrt(t1 + t2); 
@@ -390,11 +390,10 @@ public class Amazon {
          String query = String.format("SELECT * FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
          int userNum = esql.executeQuery(query);
          if (userNum > 0){
-            System.out.printf("Welcome %s \n", name)
+            System.out.printf("Welcome %s \n", name);
             query = String.format("SELECT UserID FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
             List<List<String>> user_id_result = esql.executeQueryAndReturnResult(query);
             current_user_id = Integer.parseInt(user_id_result.get(0).get(0));
-            System.out.printf("Current User ID is: %d \n",current_user_id);
             return name;
          }
          return null;
@@ -408,22 +407,23 @@ public class Amazon {
 
    public static void viewStores(Amazon esql) {
       try{
-         String query = String.format("SELECT latitude FROM USERS WHERE userID = '%s'", current_user_id);
+
+         String query = String.format("SELECT latitude FROM Users WHERE userID = %d", current_user_id);
          List<List<String>> user_lat_result = esql.executeQueryAndReturnResult(query);
          double user_lat = Double.parseDouble(user_lat_result.get(0).get(0));
 
-
-         query = String.format("SELECT longitude FROM USERS WHERE userID = '%s'", current_user_id);
+         query = String.format("SELECT longitude FROM Users WHERE userID = %d", current_user_id);
          List<List<String>> user_lon_result = esql.executeQueryAndReturnResult(query);
          double user_lon = Double.parseDouble(user_lon_result.get(0).get(0));
 
-         List<int> valid_store_ids = new ArrayList<>();
-         for(int i=0;i<20;i++){
-            query = String.format("SELECT latitude FROM STORES WHERE storeID = '%s'", i);
+         List<Integer> valid_store_ids = new ArrayList<>();
+         for(int i=1;i<=20;i++){
+
+            query = String.format("SELECT latitude FROM Store WHERE storeID = %d", i);
             List<List<String>> store_lat_result = esql.executeQueryAndReturnResult(query);
             double store_lat = Double.parseDouble(store_lat_result.get(0).get(0));
 
-            query = String.format("SELECT longitude FROM STORES WHERE storeID = '%s'", i);
+            query = String.format("SELECT longitude FROM Store WHERE storeID = %d", i);
             List<List<String>> store_lon_result = esql.executeQueryAndReturnResult(query);
             double store_lon = Double.parseDouble(store_lon_result.get(0).get(0));
 
@@ -431,19 +431,18 @@ public class Amazon {
                valid_store_ids.add(i);
             }
          }
-         query = String.format("SELECT * FROM STORES WHERE storeID = ");
+         query = String.format("SELECT storeid, latitude, longitude FROM STORE WHERE storeID = ");
          for(int id = valid_store_ids.size()-1;id>=0;id--){
             if(id==0)
                query += String.format("%s",id);
             else
                query += String.format("%s OR storeID = ",id);
          }
-         int rowCount = esql.executeQuery(query);
-         System.out.println ("total row(s): " + rowCount);
+         int rowCount = esql.executeQueryAndPrintResult(query);
+         System.out.println ("Total row(s): " + rowCount);
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
-         return null;
       }  
    }
    public static void viewProducts(Amazon esql) {}
