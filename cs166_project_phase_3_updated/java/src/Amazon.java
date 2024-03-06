@@ -35,6 +35,11 @@ public class Amazon {
 
    // stores user id for user that is currently logged in
    public static int current_user_id ;
+
+   // stores user type for user that is currently logged in
+
+   public static String current_user_type;
+
    // reference to physical database connection.
    private Connection _connection = null;
 
@@ -395,6 +400,11 @@ public class Amazon {
             query = String.format("SELECT UserID FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
             List<List<String>> user_id_result = esql.executeQueryAndReturnResult(query);
             current_user_id = Integer.parseInt(user_id_result.get(0).get(0));
+            
+            query = String.format("SELECT type FROM Users WHERE userID = %d", current_user_id);
+            List<List<String>> user_type_result = esql.executeQueryAndReturnResult(query);
+            current_user_type = (user_type_result.get(0).get(0)).trim();
+            System.out.println(current_user_type);
             return name;
          }
          return null;
@@ -461,7 +471,27 @@ public class Amazon {
       }  
    }
    public static void placeOrder(Amazon esql) {}
-   public static void viewRecentOrders(Amazon esql) {}
+   public static void viewRecentOrders(Amazon esql) {
+      try{
+         String temp = "manager";
+         String query;
+         if(current_user_type.equals(temp)){
+            query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
+            List<List<String>> store_id_result = esql.executeQueryAndReturnResult(query);
+            int store_id = Integer.parseInt(store_id_result.get(0).get(0));
+            query = String.format("SELECT O.orderNumber, U.name, O.storeID, O.productName, O.orderTime FROM Orders O, Users U WHERE O.storeID = %d AND O.customerID = U.userID", store_id);
+         
+         }
+         else{
+            query = String.format("SELECT storeID, productName, unitsOrdered, orderTime FROM Orders WHERE customerID = %d ORDER BY orderTime DESC LIMIT 5", current_user_id);
+         }
+            int rowCount = esql.executeQueryAndPrintResult(query);
+            System.out.println ("Total row(s): " + rowCount);
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
    public static void updateProduct(Amazon esql) {}
    public static void viewRecentUpdates(Amazon esql) {}
    public static void viewPopularProducts(Amazon esql) {}
