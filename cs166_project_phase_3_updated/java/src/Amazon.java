@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.lang.Math;
 
 /**
@@ -445,7 +446,20 @@ public class Amazon {
          System.err.println (e.getMessage ());
       }  
    }
-   public static void viewProducts(Amazon esql) {}
+   public static void viewProducts(Amazon esql) {
+      try{
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter Store ID: ");
+         int store_id = input.nextInt();
+
+         String query = String.format("SELECT productName, numberOfUnits, pricePerUnit FROM Product WHERE storeID = %d", store_id);
+         int rowCount = esql.executeQueryAndPrintResult(query);
+         System.out.println ("Total row(s): " + rowCount);
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
    public static void placeOrder(Amazon esql) {}
    public static void viewRecentOrders(Amazon esql) {}
    public static void updateProduct(Amazon esql) {}
