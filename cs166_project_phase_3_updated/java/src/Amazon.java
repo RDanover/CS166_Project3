@@ -293,6 +293,7 @@ public class Amazon {
                 System.out.println("7. View 5 Popular Items");
                 System.out.println("8. View 5 Popular Customers");
                 System.out.println("9. Place Product Supply Request to Warehouse");
+                System.out.println("10. View All Orders for Store");
 
                 System.out.println(".........................");
                 System.out.println("20. Log out");
@@ -306,6 +307,7 @@ public class Amazon {
                    case 7: viewPopularProducts(esql); break;
                    case 8: viewPopularCustomers(esql); break;
                    case 9: placeProductSupplyRequests(esql); break;
+                   case 10:viewAllOrders(esql);break;
 
                    case 20: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
@@ -473,20 +475,10 @@ public class Amazon {
    public static void placeOrder(Amazon esql) {}
    public static void viewRecentOrders(Amazon esql) {
       try{
-         String temp = "manager";
          String query;
-         if(current_user_type.equals(temp)){
-            query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
-            List<List<String>> store_id_result = esql.executeQueryAndReturnResult(query);
-            int store_id = Integer.parseInt(store_id_result.get(0).get(0));
-            query = String.format("SELECT O.orderNumber, U.name, O.storeID, O.productName, O.orderTime FROM Orders O, Users U WHERE O.storeID = %d AND O.customerID = U.userID", store_id);
-         
-         }
-         else{
-            query = String.format("SELECT storeID, productName, unitsOrdered, orderTime FROM Orders WHERE customerID = %d ORDER BY orderTime DESC LIMIT 5", current_user_id);
-         }
-            int rowCount = esql.executeQueryAndPrintResult(query);
-            System.out.println ("Total row(s): " + rowCount);
+         query = String.format("SELECT storeID, productName, unitsOrdered, orderTime FROM Orders WHERE customerID = %d ORDER BY orderTime DESC LIMIT 5", current_user_id);
+         int rowCount = esql.executeQueryAndPrintResult(query);
+         System.out.println ("Total row(s): " + rowCount);
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
@@ -497,6 +489,26 @@ public class Amazon {
    public static void viewPopularProducts(Amazon esql) {}
    public static void viewPopularCustomers(Amazon esql) {}
    public static void placeProductSupplyRequests(Amazon esql) {}
-
+   public static void viewAllOrders(Amazon esql) {
+      try{
+         String temp = "manager";
+         String query;
+         if(current_user_type.equals(temp)){
+            query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
+            List<List<String>> store_id_result = esql.executeQueryAndReturnResult(query);
+            int store_id = Integer.parseInt(store_id_result.get(0).get(0));
+            query = String.format("SELECT O.orderNumber, U.name, O.storeID, O.productName, O.orderTime FROM Orders O, Users U WHERE O.storeID = %d AND O.customerID = U.userID", store_id);
+            int rowCount = esql.executeQueryAndPrintResult(query);
+            System.out.println ("Total row(s): " + rowCount);
+         }
+         else{
+            System.out.println ("Only Managers can use this function");
+         }
+            
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
 }//end Amazon
 
