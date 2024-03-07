@@ -548,7 +548,57 @@ public class Amazon {
    public static void viewRecentUpdates(Amazon esql) {}
    public static void viewPopularProducts(Amazon esql) {}
    public static void viewPopularCustomers(Amazon esql) {}
-   public static void placeProductSupplyRequests(Amazon esql) {}
+   public static void placeProductSupplyRequests(Amazon esql) {
+      try{
+         String temp = "manager";
+         String query;
+         if(current_user_type.equals(temp)){
+            query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
+            List<List<String>> store_id_result = esql.executeQueryAndReturnResult(query);
+            query = String.format("SELECT storeid FROM STORE WHERE storeID = "); //output stores by id
+            for(int id = store_id_result.size()-1;id>=0;id--){
+               if(id==0)
+                  query += String.format("%s",id);
+               else
+                  query += String.format("%s OR storeID = ",id);
+            }
+            int rowCount = esql.executeQueryAndPrintResult(query); 
+            System.out.println ("Total row(s): " + rowCount);
+
+            Scanner input = new Scanner(System.in);
+            System.out.print("\tEnter Store ID: ");
+            int store_id = input.nextInt();
+            input.nextLine();
+
+            query = String.format("SELECT productName FROM Product WHERE storeID = %d", store_id);  //output products from chosen store
+            rowCount = esql.executeQueryAndPrintResult(query);
+            System.out.println ("Total row(s): " + rowCount);
+
+            System.out.print("\tEnter Product Name: ");
+            String product_name = input.nextLine();
+
+            System.out.print("\tEnter Warehouse ID: ");
+            int warehouse_id = input.nextInt();
+            input.nextLine();
+            
+            System.out.print("\tEnter number of units needed: ");
+            int num_units = input.nextInt();
+            query = String.format("UPDATE Product SET numberOfUnits = numberOfUnits + %d WHERE productName = '%s'", num_units, product_name);
+            esql.executeUpdate(query);
+
+            query = String.format("Insert INTO ProductSupplyRequests (managerID, warehouseID, storeID, productName, unitsRequested) VALUES (%d, %d, %d, '%s', %d, CURRENT_TIMESTAMP)", current_user_id, warehouse_id, store_id, product_name, num_units);
+            esql.executeUpdate(query);
+            System.out.println("\t" + num_units + " units of " + product_name + " have been requested.");
+         }
+         else{
+            System.out.println ("Only Managers can use this function");
+         }
+            
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
    public static void viewAllOrders(Amazon esql) {
       try{
          String temp = "manager";
