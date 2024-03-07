@@ -20,7 +20,6 @@ FROM '/home/csmajs/kpoth001/CS166_Project3/cs166_project_phase_3_updated/data/or
 WITH DELIMITER ',' CSV HEADER;
 ALTER SEQUENCE orders_orderNumber_seq RESTART 501;
 
-
 COPY ProductSupplyRequests
 FROM '/home/csmajs/kpoth001/CS166_Project3/cs166_project_phase_3_updated/data/productSupplyRequests.csv'
 WITH DELIMITER ',' CSV HEADER;
