@@ -634,8 +634,71 @@ public class Amazon {
       }
 
    }
-   public static void viewPopularProducts(Amazon esql) {}
-   public static void viewPopularCustomers(Amazon esql) {}
+   public static void viewPopularProducts(Amazon esql) {
+      try{
+         String temp = "manager";
+         if(current_user_type.equals(temp)){
+            String query;
+            query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
+            int rowCount = esql.executeQueryAndPrintResult(query); 
+            System.out.println ("Total row(s): " + rowCount);
+
+            Scanner input = new Scanner(System.in);
+            System.out.print("\tEnter Store ID: ");
+            int store_id = input.nextInt();
+            input.nextLine();
+
+            query = String.format("SELECT productName, COUNT(*) as orderCount FROM Orders WHERE storeID = %d GROUP BY productName ORDER BY orderCount DESC LIMIT 5", store_id);
+            rowCount = esql.executeQueryAndPrintResult(query);
+            System.out.println ("Total row(s): " + rowCount);
+         }
+         else{
+            System.out.println ("Only Managers can use this function");
+         }
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+   public static void viewPopularCustomers(Amazon esql) {
+      try{
+         String temp = "manager";
+         if(current_user_type.equals(temp)){
+
+            String query;
+            query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
+            int rowCount = esql.executeQueryAndPrintResult(query); 
+            System.out.println ("Total row(s): " + rowCount);
+
+            Scanner input = new Scanner(System.in);
+            System.out.print("\tEnter Store ID: ");
+            int store_id = input.nextInt();
+            input.nextLine();
+
+            
+            query = String.format("SELECT customerID , COUNT(*) as customerCount FROM Orders WHERE storeID = %d GROUP BY customerID ORDER BY customerCount DESC LIMIT 5", store_id); //get manager's stores
+            List<List<String>> customer_id_result = esql.executeQueryAndReturnResult(query);
+
+            query = String.format("SELECT userID, name FROM Users WHERE userID = ");
+            for(int id = customer_id_result.size()-1; id >= 0; id--){   
+               if(id==0)
+                  query += String.format("%s",customer_id_result.get(id).get(0));
+               else
+                  query += String.format("%s OR userID = ",customer_id_result.get(id).get(0));
+            }
+            rowCount = esql.executeQueryAndPrintResult(query);
+            System.out.println ("Total row(s): " + rowCount);
+         }
+         else{
+            System.out.println ("Only Managers can use this function");
+         }
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
    public static void placeProductSupplyRequests(Amazon esql) {
       try{
          String temp = "manager";
