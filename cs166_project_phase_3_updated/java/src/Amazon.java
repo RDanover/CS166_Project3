@@ -294,6 +294,7 @@ public class Amazon {
                 System.out.println("8. View 5 Popular Customers");
                 System.out.println("9. Place Product Supply Request to Warehouse");
                 System.out.println("10. View All Orders for Store");
+                System.out.println("11. View and Edit User and Product Info");
 
                 System.out.println(".........................");
                 System.out.println("20. Log out");
@@ -307,7 +308,8 @@ public class Amazon {
                    case 7: viewPopularProducts(esql); break;
                    case 8: viewPopularCustomers(esql); break;
                    case 9: placeProductSupplyRequests(esql); break;
-                   case 10:viewAllOrders(esql);break;
+                   case 10: viewAllOrders(esql);break;
+                   case 11: adminViewEdit(esql);break;
 
                    case 20: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
@@ -503,6 +505,49 @@ public class Amazon {
          }
          else{
             System.out.println ("Only Managers can use this function");
+         } 
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminViewEdit (Amazon esql){
+      try{
+         String temp = "admin";
+         String query;
+         if(current_user_type.equals(temp)){
+            boolean adminmenu = true;
+            while(adminmenu) {
+                System.out.println("ADMIN TOOLS");
+                System.out.println("---------");
+                System.out.println("1. View all Users");
+                System.out.println("2. View all Products");
+                System.out.println("3. Add new User");
+                System.out.println("4. Delete User");
+                System.out.println("5. Update User Info");
+                System.out.println("6. Add new Product");
+                System.out.println("7. Delete Product");
+                System.out.println("8. Update Product");
+                System.out.println(".........................");
+                System.out.println("20. Return to main menu");
+                switch (readChoice()){
+                   case 1: adminViewUsers(esql); break;
+                   case 2: adminViewProducts(esql); break;
+                   case 3: adminAddUser(esql); break;
+                   case 4: adminDeleteUser(esql); break;
+                   case 5: adminUpdateUser(esql); break;
+                   case 6: adminAddProduct(esql); break;
+                   case 7: adminDeleteProduct(esql); break;
+                   case 8: adminUpdateProduct(esql); break;
+
+                   case 20: adminmenu = false; break;
+                   default : System.out.println("Unrecognized choice!"); break;
+                }
+         }
+         }
+         else{
+            System.out.println ("Only Admins can use this function");
          }
             
       }
@@ -510,5 +555,83 @@ public class Amazon {
          System.err.println (e.getMessage ());
       }  
    }
+   public static void adminViewUsers(Amazon esql) {
+      try{
+         String query;
+         query = "SELECT * FROM USERS";
+         int rowCount = esql.executeQueryAndPrintResult(query);
+         System.out.println ("Total row(s): " + rowCount);
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminViewProducts(Amazon esql) {
+      try{
+         String query;
+         query = "SELECT * FROM Product";
+         int rowCount = esql.executeQueryAndPrintResult(query);
+         System.out.println ("Total row(s): " + rowCount);
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminAddUser(Amazon esql) {
+      try{
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminDeleteUser(Amazon esql) {
+      try{
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminUpdateUser(Amazon esql) {
+      try{
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminAddProduct(Amazon esql) {
+      try{
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminDeleteProduct(Amazon esql) {
+      try{
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
+   public static void adminUpdateProduct(Amazon esql) {
+      try{
+
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage ());
+      }  
+   }
+
 }//end Amazon
 
