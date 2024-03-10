@@ -578,10 +578,30 @@ public class Amazon {
          System.err.println (e.getMessage ());
       }  
    }
-
+   //tables effected by user update: store, orders, product supply requests, product updates 
    public static void adminAddUser(Amazon esql) {
       try{
-
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter User ID of User you would like to add: ");
+         int userID = input.nextInt();
+         String query = String.format("SELECT * FROM USERS WHERE userID = '%s'", userID);
+         int userNum = esql.executeQuery(query);
+         if(userNum !=0){
+            System.out.println ("A User with that User ID already exists");
+            return;
+         }
+         System.out.print("\tEnter User name: ");
+         String username = in.readLine();
+         System.out.print("\tEnter User password: ");
+         String password = in.readLine();
+         System.out.print("\tEnter User latitude: ");
+         double latitude = input.nextDouble();
+         System.out.print("\tEnter User longitude: ");
+         double longitude = input.nextDouble();
+         System.out.print("\tEnter User type: ");
+         String type = in.readLine();
+         query = String.format("Insert INTO USERS (userID, name, password, latitude, longitude, type) VALUES (%d, '%s', '%s', %d, %d, '%s')", userID, username, password, latitude, longitude, type);
+	      esql.executeUpdate(query);
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
@@ -590,7 +610,17 @@ public class Amazon {
 
    public static void adminDeleteUser(Amazon esql) {
       try{
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter User ID of User you would like to delete: ");
+         int userID = input.nextInt();
+         String query = String.format("SELECT * FROM USERS WHERE userID = '%s'", userID);
+         int userNum = esql.executeQuery(query);
+         if(userNum == 0){
+            System.out.println ("A User with that User ID does not exist");
+            return;
+         }
 
+         // TBD DELETE USER AND UPDATE TABLES 
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
@@ -599,16 +629,41 @@ public class Amazon {
 
    public static void adminUpdateUser(Amazon esql) {
       try{
-
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter User ID of User you would like to update: ");
+         int userID = input.nextInt();
+         String query = String.format("SELECT * FROM USERS WHERE userID = '%s'", userID);
+         int userNum = esql.executeQuery(query);
+         if(userNum == 0){
+            System.out.println ("A User with that User ID does not exist");
+            return;
+         }
+         // TBD UPDATE USER AND UPDATE TABLES 
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
       }  
    }
-
+   //tables effected by product update: orders, product supply requests, product updates 
    public static void adminAddProduct(Amazon esql) {
       try{
-
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter store ID of the product you would like to add: ");
+         int storeID = input.nextInt();
+         System.out.print("\tEnter the name of the product you would like to add: ");
+         String productName = in.readLine();
+         String query = String.format("SELECT * FROM Product WHERE storeID = '%s' AND productName = '%s'", storeID,productName);
+         int userNum = esql.executeQuery(query);
+         if(userNum !=0){
+            System.out.println ("A product with that store ID and product name already exists");
+            return;
+         }
+         System.out.print("\tEnter number of units: ");
+         int numberOfUnits = input.nextInt();
+         System.out.print("\tEnter price per unit: ");
+         double pricePerUnit = input.nextDouble();
+         query = String.format("Insert INTO Product (storeID, productName, numberOfUnits, pricePerUnit) VALUES (%d, '%s', %d, %d)", storeID, productName, numberOfUnits, pricePerUnit);
+	      esql.executeUpdate(query);
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
@@ -617,7 +672,18 @@ public class Amazon {
 
    public static void adminDeleteProduct(Amazon esql) {
       try{
-
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter store ID of the product you would like to delete: ");
+         int storeID = input.nextInt();
+         System.out.print("\tEnter the name of the product you would like to delete: ");
+         String productName = in.readLine();
+         String query = String.format("SELECT * FROM Product WHERE storeID = '%s' AND productName = '%s'", storeID,productName);
+         int userNum = esql.executeQuery(query);
+         if(userNum == 0){
+            System.out.println ("A product with that store ID and product name does not exist");
+            return;
+         }
+         // TBD DELETE PRODUCT AND UPDATE TABLES 
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
@@ -626,7 +692,18 @@ public class Amazon {
 
    public static void adminUpdateProduct(Amazon esql) {
       try{
-
+         Scanner input = new Scanner(System.in);
+         System.out.print("\tEnter store ID of the product you would like to update: ");
+         int storeID = input.nextInt();
+         System.out.print("\tEnter the name of the product you would like to update: ");
+         String productName = in.readLine();
+         String query = String.format("SELECT * FROM Product WHERE storeID = '%s' AND productName = '%s'", storeID,productName);
+         int userNum = esql.executeQuery(query);
+         if(userNum == 0){
+            System.out.println ("A product with that store ID and product name does not exist");
+            return;
+         }
+         // TBD UPDATE PRODUCT AND UPDATE TABLES 
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
