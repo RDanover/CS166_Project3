@@ -620,6 +620,7 @@ public class Amazon {
          int numberOfUnits = input.nextInt();
          System.out.print("\tEnter price per unit: ");
          double pricePerUnit = input.nextDouble();
+         input.nextLine();
          query = String.format("UPDATE Product SET numberOfUnits = %d, pricePerUnit = %.6f WHERE storeID = %d AND productName = '%s'", numberOfUnits, pricePerUnit, storeID, productName);
 	      esql.executeUpdate(query);
       }
