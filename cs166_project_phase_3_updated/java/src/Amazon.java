@@ -524,7 +524,7 @@ public class Amazon {
          query = String.format("UPDATE Product SET numberOfUnits = numberOfUnits + %d WHERE productName = '%s'", num_units, product_name);
          esql.executeUpdate(query);
       
-         query = String.format("Insert INTO Orders (customerID, storeID, productName, unitsOrdered, orderTime) VALUES (%d, %d, '%s', %d, CURRENT_TIMESTAMP)", current_user_id, store_id, product_name, num_units);
+         query = String.format("Insert INTO Orders (customerID, storeID, productName, unitsOrdered, orderTime) VALUES (%d, %d, '%s', %d, CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)))", current_user_id, store_id, product_name, num_units);
 	 esql.executeUpdate(query);
 	 System.out.println("\t" + num_units + " units of " + product_name + " have been ordered."); 
       }
@@ -601,7 +601,6 @@ public class Amazon {
             if(updateunitsbool.contains("Y") || updatepricebool.contains("Y")){
                query = String.format("Insert INTO ProductUpdates (managerID, storeID, productName, updatedOn) VALUES (%d, %d, '%s', CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)))", current_user_id, store_id, product_name);
                esql.executeUpdate(query);
-               System.out.println("\t" + product_name + " has been updated.");
             }
 
          }
