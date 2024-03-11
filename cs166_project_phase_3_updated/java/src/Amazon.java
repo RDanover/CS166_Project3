@@ -523,23 +523,15 @@ public class Amazon {
                 System.out.println("---------");
                 System.out.println("1. View all Users");
                 System.out.println("2. View all Products");
-                System.out.println("3. Add new User");
-                System.out.println("4. Delete User");
-                System.out.println("5. Update User Info");
-                System.out.println("6. Add new Product");
-                System.out.println("7. Delete Product");
-                System.out.println("8. Update Product");
+                System.out.println("3. Update User Info");
+                System.out.println("4. Update Product Info");
                 System.out.println(".........................");
                 System.out.println("20. Return to main menu");
                 switch (readChoice()){
                    case 1: adminViewUsers(esql); break;
                    case 2: adminViewProducts(esql); break;
-                   case 3: adminAddUser(esql); break;
-                   case 4: adminDeleteUser(esql); break;
-                   case 5: adminUpdateUser(esql); break;
-                   case 6: adminAddProduct(esql); break;
-                   case 7: adminDeleteProduct(esql); break;
-                   case 8: adminUpdateProduct(esql); break;
+                   case 3: adminUpdateUser(esql); break;
+                   case 4: adminUpdateProduct(esql); break;
 
                    case 20: adminmenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
@@ -578,16 +570,17 @@ public class Amazon {
          System.err.println (e.getMessage ());
       }  
    }
-   //tables effected by user update: store, orders, product supply requests, product updates 
-   public static void adminAddUser(Amazon esql) {
+
+   public static void adminUpdateUser(Amazon esql) {
       try{
          Scanner input = new Scanner(System.in);
-         System.out.print("\tEnter User ID of User you would like to add: ");
+         System.out.print("\tEnter User ID of User you would like to update: ");
          int userID = input.nextInt();
+         input.nextLine();
          String query = String.format("SELECT * FROM USERS WHERE userID = '%s'", userID);
          int userNum = esql.executeQuery(query);
-         if(userNum !=0){
-            System.out.println ("A User with that User ID already exists");
+         if(userNum == 0){
+            System.out.println ("A User with that User ID does not exist");
             return;
          }
          System.out.print("\tEnter User name: ");
@@ -598,92 +591,11 @@ public class Amazon {
          double latitude = input.nextDouble();
          System.out.print("\tEnter User longitude: ");
          double longitude = input.nextDouble();
+         input.nextLine();
          System.out.print("\tEnter User type: ");
          String type = in.readLine();
-         query = String.format("Insert INTO USERS (userID, name, password, latitude, longitude, type) VALUES (%d, '%s', '%s', %d, %d, '%s')", userID, username, password, latitude, longitude, type);
+         query = String.format("UPDATE USERS SET name = '%s', password = '%s', latitude = %.6f, longitude = %.6f, type = '%s' WHERE userID = %d ", username, password, latitude, longitude, type, userID );
 	      esql.executeUpdate(query);
-      }
-      catch(Exception e){
-         System.err.println (e.getMessage ());
-      }  
-   }
-
-   public static void adminDeleteUser(Amazon esql) {
-      try{
-         Scanner input = new Scanner(System.in);
-         System.out.print("\tEnter User ID of User you would like to delete: ");
-         int userID = input.nextInt();
-         String query = String.format("SELECT * FROM USERS WHERE userID = '%s'", userID);
-         int userNum = esql.executeQuery(query);
-         if(userNum == 0){
-            System.out.println ("A User with that User ID does not exist");
-            return;
-         }
-
-         // TBD DELETE USER AND UPDATE TABLES 
-      }
-      catch(Exception e){
-         System.err.println (e.getMessage ());
-      }  
-   }
-
-   public static void adminUpdateUser(Amazon esql) {
-      try{
-         Scanner input = new Scanner(System.in);
-         System.out.print("\tEnter User ID of User you would like to update: ");
-         int userID = input.nextInt();
-         String query = String.format("SELECT * FROM USERS WHERE userID = '%s'", userID);
-         int userNum = esql.executeQuery(query);
-         if(userNum == 0){
-            System.out.println ("A User with that User ID does not exist");
-            return;
-         }
-         // TBD UPDATE USER AND UPDATE TABLES 
-      }
-      catch(Exception e){
-         System.err.println (e.getMessage ());
-      }  
-   }
-   //tables effected by product update: orders, product supply requests, product updates 
-   public static void adminAddProduct(Amazon esql) {
-      try{
-         Scanner input = new Scanner(System.in);
-         System.out.print("\tEnter store ID of the product you would like to add: ");
-         int storeID = input.nextInt();
-         System.out.print("\tEnter the name of the product you would like to add: ");
-         String productName = in.readLine();
-         String query = String.format("SELECT * FROM Product WHERE storeID = '%s' AND productName = '%s'", storeID,productName);
-         int userNum = esql.executeQuery(query);
-         if(userNum !=0){
-            System.out.println ("A product with that store ID and product name already exists");
-            return;
-         }
-         System.out.print("\tEnter number of units: ");
-         int numberOfUnits = input.nextInt();
-         System.out.print("\tEnter price per unit: ");
-         double pricePerUnit = input.nextDouble();
-         query = String.format("Insert INTO Product (storeID, productName, numberOfUnits, pricePerUnit) VALUES (%d, '%s', %d, %d)", storeID, productName, numberOfUnits, pricePerUnit);
-	      esql.executeUpdate(query);
-      }
-      catch(Exception e){
-         System.err.println (e.getMessage ());
-      }  
-   }
-
-   public static void adminDeleteProduct(Amazon esql) {
-      try{
-         Scanner input = new Scanner(System.in);
-         System.out.print("\tEnter store ID of the product you would like to delete: ");
-         int storeID = input.nextInt();
-         System.out.print("\tEnter the name of the product you would like to delete: ");
-         String productName = in.readLine();
-         String query = String.format("SELECT * FROM Product WHERE storeID = '%s' AND productName = '%s'", storeID,productName);
-         int userNum = esql.executeQuery(query);
-         if(userNum == 0){
-            System.out.println ("A product with that store ID and product name does not exist");
-            return;
-         }
-         // TBD DELETE PRODUCT AND UPDATE TABLES 
       }
       catch(Exception e){
          System.err.println (e.getMessage ());
@@ -695,6 +607,7 @@ public class Amazon {
          Scanner input = new Scanner(System.in);
          System.out.print("\tEnter store ID of the product you would like to update: ");
          int storeID = input.nextInt();
+         input.nextLine();
          System.out.print("\tEnter the name of the product you would like to update: ");
          String productName = in.readLine();
          String query = String.format("SELECT * FROM Product WHERE storeID = '%s' AND productName = '%s'", storeID,productName);
@@ -703,7 +616,12 @@ public class Amazon {
             System.out.println ("A product with that store ID and product name does not exist");
             return;
          }
-         // TBD UPDATE PRODUCT AND UPDATE TABLES 
+         System.out.print("\tEnter number of units: ");
+         int numberOfUnits = input.nextInt();
+         System.out.print("\tEnter price per unit: ");
+         double pricePerUnit = input.nextDouble();
+         query = String.format("UPDATE Product SET numberOfUnits = %d, pricePerUnit = %.6f WHERE storeID = %d AND productName = '%s'", numberOfUnits, pricePerUnit, storeID, productName);
+	      esql.executeUpdate(query);
       }
       catch(Exception e){
          System.err.println (e.getMessage ());

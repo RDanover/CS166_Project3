@@ -33,7 +33,7 @@ CREATE TABLE Product ( storeID integer NOT NULL,
                        PRIMARY KEY(storeID, productName), 
                        FOREIGN KEY(storeID) REFERENCES Store(storeID)
 		               ON DELETE CASCADE
-);
+); 
 
 CREATE TABLE Warehouse ( WarehouseID integer,
                          area integer,
