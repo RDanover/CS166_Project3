@@ -757,13 +757,19 @@ public class Amazon {
    public static void viewAllOrders(Amazon esql) {
       try{
          String temp = "manager";
-         String query;
          if(current_user_type.equals(temp)){
+            String query;
             query = String.format("SELECT storeID FROM Store WHERE managerID = %d", current_user_id);
-            List<List<String>> store_id_result = esql.executeQueryAndReturnResult(query);
-            int store_id = Integer.parseInt(store_id_result.get(0).get(0));
+            int rowCount = esql.executeQueryAndPrintResult(query); 
+            System.out.println ("Total row(s): " + rowCount);
+
+            Scanner input = new Scanner(System.in);
+            System.out.print("\tEnter Store ID: ");
+            int store_id = input.nextInt();
+            input.nextLine();
+            
             query = String.format("SELECT O.orderNumber, U.name, O.storeID, O.productName, O.orderTime FROM Orders O, Users U WHERE O.storeID = %d AND O.customerID = U.userID", store_id);
-            int rowCount = esql.executeQueryAndPrintResult(query);
+            rowCount = esql.executeQueryAndPrintResult(query);
             System.out.println ("Total row(s): " + rowCount);
          }
          else{
